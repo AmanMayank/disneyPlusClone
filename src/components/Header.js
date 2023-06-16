@@ -6,7 +6,12 @@ function Header() {
       <Logo>
         <img src="/images/logo.svg" alt="Disney+" />
       </Logo>
-      <NavMenu>Menu</NavMenu>
+      <NavMenu>
+        <a href="/home">
+          <img src="/images/home-icon.svg" alt="home" />
+          <span>Home</span>
+        </a>
+      </NavMenu>
     </Nav>
   );
 }
