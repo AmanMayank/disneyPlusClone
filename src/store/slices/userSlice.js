@@ -9,9 +9,9 @@ const userSlice = createSlice({
   },
   reducers: {
     setUserLoginDetails(state, action) {
-      state.name = action.payload.name;
+      state.name = action.payload.displayName;
       state.email = action.payload.email;
-      state.photo = action.payload.photo;
+      state.photo = action.payload.photoURL;
     },
 
     setSignOutState(state, action) {

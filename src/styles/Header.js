@@ -112,4 +112,8 @@ const Login = styled.a`
   }
 `;
 
-export { Nav, Logo, NavMenu, Login };
+const UserImg = styled.img`
+  height: 100%;
+`;
+
+export { Nav, Logo, NavMenu, Login, UserImg };
