@@ -1,25 +1,59 @@
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { Nav, Logo, NavMenu, Login, UserImg } from "../styles/Header";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut,
+} from "firebase/auth";
+import {
+  Nav,
+  Logo,
+  NavMenu,
+  Login,
+  UserImg,
+  SignOut,
+  DropDown,
+} from "../styles/Header";
 import { firebaseApp } from "../firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserLoginDetails } from "../store";
+import { setUserLoginDetails, setSignOutState } from "../store";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const user = useSelector((state) => {
     return state.users;
   });
 
+  useEffect(() => {
+    console.log("user.name", user.name !== null);
+    if (user.name !== "") {
+      navigate("/home");
+    }
+  }, [user.name, navigate]);
+
   const handleAuth = async () => {
-    try {
-      const auth = getAuth(firebaseApp);
-      const provider = new GoogleAuthProvider();
-      const userData = await signInWithPopup(auth, provider);
-      dispatch(setUserLoginDetails(userData.user));
-      console.log(userData.user);
-    } catch (err) {
-      console.log(err);
+    const auth = getAuth(firebaseApp);
+    if (user.name === "") {
+      try {
+        const provider = new GoogleAuthProvider();
+        const userData = await signInWithPopup(auth, provider);
+        dispatch(setUserLoginDetails(userData.user));
+        console.log(userData.user);
+      } catch (err) {
+        console.log(err);
+      }
+    } else if (user.name !== "" || user.name !== null) {
+      signOut(auth)
+        .then(() => {
+          dispatch(setSignOutState());
+          navigate("/");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
@@ -29,7 +63,7 @@ function Header() {
         <img src="/images/logo.svg" alt="Disney+" />
       </Logo>
 
-      {user.name === "" ? (
+      {user.name === "" || user.name === null ? (
         <Login onClick={handleAuth}>Login</Login>
       ) : (
         <>
@@ -64,11 +98,15 @@ function Header() {
               <span>Series</span>
             </a>
           </NavMenu>
-          <UserImg src={user.photo} alt={user.name} />
+
+          <SignOut>
+            <UserImg src={user.photo} alt={user.name} />
+            <DropDown>
+              <span onClick={handleAuth}>Sign Out</span>
+            </DropDown>
+          </SignOut>
         </>
       )}
-
-      {/* <Login onClick={handleAuth}>Login</Login> */}
     </Nav>
   );
 }
