@@ -32,7 +32,7 @@ function Header() {
     if (user.name !== "") {
       navigate("/home");
     }
-  }, [user.name, navigate]);
+  }, []);
 
   const handleAuth = async () => {
     const auth = getAuth(firebaseApp);

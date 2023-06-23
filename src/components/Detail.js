@@ -12,23 +12,40 @@ import {
   Description,
 } from "../styles/Detail";
 
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { db } from "../firebase";
+
+import { getDoc, doc } from "firebase/firestore";
+
 function Detail() {
+  const { id } = useParams();
+  const [detailData, setDetailData] = useState({});
+
+  useEffect(() => {
+    const dbRef = doc(db, "movies/" + id);
+    getDoc(dbRef)
+      .then((doc) => {
+        if (doc.exists) {
+          setDetailData(doc.data());
+        } else {
+          console.log("no such document in firebase 🔥");
+        }
+      })
+      .catch((error) => {
+        console.log("Error getting document:", error);
+      });
+  }, [id]);
+
   return (
     <Container>
       <Background>
-        <img
-          alt=""
-          src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/AAC4808815AE5721A6AAB372DD14B8CE2E7E9EFF3A27942EF2B6B45EBF4E65CB/scale?width=1440&aspectRatio=1.78&format=jpeg"
-        />
+        <img alt={detailData.title} src={detailData.backgroundImg} />
       </Background>
 
       <ImageTitle>
-        <img
-          alt=""
-          src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/9562874BAB22B22A698368819B9EBF30FEB0291543552EB2416A5A61A73F63F4/scale?width=1440&aspectRatio=1.78"
-        />
+        <img alt={detailData.title} src={detailData.titleImg} />
       </ImageTitle>
-
       <ContentMeta>
         <Controls>
           <Player>
@@ -49,14 +66,8 @@ function Detail() {
             </div>
           </GroupWatch>
         </Controls>
-        <SubTitle>
-          2016 • 1h 47m • Family, Fantasy, Animation, Action-Adventure, Musical
-        </SubTitle>
-        <Description>
-          Moana sets sail on a daring mission to save her people. Along the way,
-          she meets the mighty demigod Maui–together they cross the ocean on a
-          fun-filled, action-packed voyage from Walt Disney Animation Studios.
-        </Description>
+        <SubTitle>{detailData.subTitle}</SubTitle>
+        <Description>{detailData.description}</Description>
       </ContentMeta>
     </Container>
   );
