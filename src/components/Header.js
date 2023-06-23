@@ -17,7 +17,7 @@ import { firebaseApp } from "../firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserLoginDetails, setSignOutState } from "../store";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Header() {
   const dispatch = useDispatch();
@@ -28,11 +28,10 @@ function Header() {
   });
 
   useEffect(() => {
-    console.log("user.name", user.name !== null);
     if (user.name !== "") {
       navigate("/home");
     }
-  }, []);
+  }, [user.name]);
 
   const handleAuth = async () => {
     const auth = getAuth(firebaseApp);
@@ -45,7 +44,7 @@ function Header() {
       } catch (err) {
         console.log(err);
       }
-    } else if (user.name !== "" || user.name !== null) {
+    } else if (user.name !== "") {
       signOut(auth)
         .then(() => {
           dispatch(setSignOutState());
@@ -63,40 +62,40 @@ function Header() {
         <img src="/images/logo.svg" alt="Disney+" />
       </Logo>
 
-      {user.name === "" || user.name === null ? (
+      {user.name === "" ? (
         <Login onClick={handleAuth}>Login</Login>
       ) : (
         <>
           <NavMenu>
-            <a href="/home">
+            <Link to="/home">
               <img src="/images/home-icon.svg" alt="home" />
               <span>Home</span>
-            </a>
+            </Link>
 
-            <a href="/home">
+            <Link to="/home">
               <img src="/images/search-icon.svg" alt="Search" />
               <span>Search</span>
-            </a>
+            </Link>
 
-            <a href="/home">
+            <Link to="/home">
               <img src="/images/watchlist-icon.svg" alt="Watchlist" />
               <span>Watchlist</span>
-            </a>
+            </Link>
 
-            <a href="/home">
+            <Link to="/home">
               <img src="/images/original-icon.svg" alt="Originals" />
               <span>Originals</span>
-            </a>
+            </Link>
 
-            <a href="/home">
+            <Link to="/home">
               <img src="/images/movie-icon.svg" alt="Movies" />
               <span>Movies</span>
-            </a>
+            </Link>
 
-            <a href="/home">
+            <Link to="/home">
               <img src="/images/series-icon.svg" alt="Series" />
               <span>Series</span>
-            </a>
+            </Link>
           </NavMenu>
 
           <SignOut>
